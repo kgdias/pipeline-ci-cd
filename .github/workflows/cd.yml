@@ -1,0 +1,41 @@
+name: Continuous Deployment
+
+on:
+  push:
+    branches: [ "main" ]
+  # Permite rodar manualmente se necessário
+  workflow_dispatch:
+
+# Define as permissões necessárias para o token do GitHub Actions interagir com o GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Garante que deploys simultâneos não quebrem o estado do ambiente
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps: deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Configurar GitHub Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload do artefato do site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # Aponta para a pasta onde está o index.html
+          path: './site'
+
+      - name: Deploy para o GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

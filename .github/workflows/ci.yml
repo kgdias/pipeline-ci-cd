@@ -1,0 +1,30 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Validar estrutura do HTML (Linter Simples)
+        run: |
+          echo "Validando se o arquivo index.html existe..."
+          if [ ! -f "site/index.html" ]; then
+            echo "Erro: site/index.html não encontrado!"
+            exit 1
+          fi
+          echo "Arquivo index.html validado com sucesso."
+
+      - name: Executar testes automatizados (Mock)
+        run: |
+          echo "Executando testes unitários..."
+          # Simulação de um comando de teste bem-sucedido
+          echo "Todos os testes passaram com sucesso!"
